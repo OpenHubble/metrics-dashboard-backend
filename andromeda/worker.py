@@ -4,11 +4,15 @@ import asyncio
 # Logging
 import logging
 
+# UUID
+import uuid
+
 # Types
 from typing import NoReturn
 
 # Application
 from database.database import session as db_session_factory  # Database
+from base import BaseSchema
 from models import Host  # Models
 
 # Andromeda
@@ -19,7 +23,12 @@ from andromeda.service import save_agent_metrics, update_host_availability
 logger = logging.getLogger("andromeda.worker")
 
 
-async def process_host(host_data: Host) -> None:
+class HostData(BaseSchema):
+    id: uuid.UUID
+
+
+async def process_host(host_data: HostData) -> None:
+
     with db_session_factory() as db:
         host = db.get(Host, host_data.id)
 
@@ -55,7 +64,7 @@ async def run_andromeda_cycle() -> None:
     with db_session_factory() as db:
         hosts = db.query(Host).where(Host.is_active == True).all()
 
-        host_payloads = [{"id": h.id} for h in hosts]
+        host_payloads = [HostData(id=h.id) for h in hosts]
 
     if not host_payloads:
         return
@@ -70,6 +79,7 @@ async def start_andromeda_worker(poll_interval: int = 10) -> NoReturn:
     while True:
         try:
             await run_andromeda_cycle()
+
         except Exception as e:
             logger.error("Error in Andromeda worker cycle: %s", e)
 
