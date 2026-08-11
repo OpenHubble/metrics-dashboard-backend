@@ -19,6 +19,7 @@ from andromeda.worker import start_andromeda_worker
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    print("here")
     andromeda_task = asyncio.create_task(start_andromeda_worker(poll_interval=10))
 
     yield
@@ -57,7 +58,7 @@ app = FastAPI(
             "description": "Development",
         },
     ],
-    lifespan=lifespan,
+    lifespan=lifespan if settings.app_mode == "production" else None,
 )
 
 app.add_middleware(

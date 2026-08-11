@@ -13,6 +13,9 @@ ROOT_DIR = Path(__file__).resolve().parent.parent  # Root directory
 
 # Class Settings
 class Settings(BaseSettings):
+    # Application
+    app_mode: str
+
     # Database
     postgresql_url: str
 
