@@ -1,2 +1,2 @@
 # Enums
-from enums.communication import Communication
+from enums.communication import CommunicationType
