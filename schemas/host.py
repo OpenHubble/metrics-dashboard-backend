@@ -17,8 +17,8 @@ class HostCreate(BaseSchema):
     name: str
     description: str
 
-    ipv4: IPvAnyAddress
-    dns: str
+    ipv4: IPvAnyAddress | None = None
+    dns: str | None = None
     port: int
 
     api_key: str
