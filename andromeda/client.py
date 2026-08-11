@@ -11,7 +11,7 @@ from typing import Any
 import httpx
 
 # Application
-from enums.communication import Communication  # Enum
+from enums.communication import CommunicationType  # Enum
 from models import Host  # Models
 
 # Logger
@@ -31,7 +31,7 @@ class AgentClient:
     def _build_base_url(self) -> str:
         address = (
             self.host.ipv4
-            if self.host.communication == Communication.IPV4
+            if self.host.communication == CommunicationType.IPV4
             else self.host.dns
         )
 
