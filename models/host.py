@@ -76,3 +76,7 @@ class Host(BaseModel):
         secondary="host_tags",
         back_populates="hosts",
     )
+    metrics: Mapped[["Metric"]] = relationship(
+        "Metric",
+        back_populates="host",
+    )
