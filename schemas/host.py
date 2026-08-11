@@ -7,7 +7,7 @@ from pydantic.networks import IPvAnyAddress
 
 # Application
 from base import BaseSchema  # Base
-from enums import Communication  # Enums
+from enums import CommunicationType  # Enums
 from schemas.tag import TagRead  # Schema for Tag
 from schemas.group import GroupRead  # Schema for Group
 
@@ -22,7 +22,7 @@ class HostCreate(BaseSchema):
     port: int
 
     api_key: str
-    communication: Communication
+    communication: CommunicationType
 
     is_active: bool
 
@@ -40,7 +40,7 @@ class HostUpdate(BaseSchema):
     port: int | None = None
 
     api_key: str | None = None
-    communication: Communication | None = None
+    communication: CommunicationType | None = None
 
     is_active: bool | None = None
 
@@ -60,7 +60,7 @@ class HostRead(BaseSchema):
     port: int
 
     api_key: str
-    communication: Communication
+    communication: CommunicationType
 
     is_active: bool
     agent_availability: bool
