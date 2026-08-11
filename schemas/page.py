@@ -4,6 +4,7 @@ from uuid import UUID
 
 # Application
 from base import BaseSchema  # Base
+from schemas.widget import WidgetRead  # Schema
 
 
 # Create Page
@@ -21,6 +22,9 @@ class PageUpdate(BaseSchema):
 # Read Page
 class PageRead(PageCreate):
     id: UUID
+
+    user_id: UUID
+    widgets: list[WidgetRead] = []
 
     created_at: datetime
     updated_at: datetime
