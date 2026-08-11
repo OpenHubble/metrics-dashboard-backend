@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
 # SQLAlchemy
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 # Datetime
 from datetime import datetime, timezone
@@ -30,6 +30,7 @@ async def list_pages(
 ):
     db_pages = (
         db.query(Page)
+        .options(joinedload(Page.widgets))
         .where(
             Page.user_id == user.id,
             Page.deleted_at == None,
@@ -48,6 +49,7 @@ async def get_page(
 ):
     db_page = (
         db.query(Page)
+        .options(joinedload(Page.widgets))
         .where(
             Page.id == page_id,
             Page.user_id == user.id,
@@ -58,20 +60,14 @@ async def get_page(
 
     if not db_page:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="Page not found",
-        )
-
-    if db_page.user_id != user.id:
-        raise HTTPException(
-            status_code=404,
-            detail="This page is not yours",
         )
 
     return db_page
 
 
-@router.post("", response_model=PageRead)
+@router.post("", response_model=PageRead, status_code=status.HTTP_201_CREATED)
 async def create_page(
     page_data: PageCreate,
     user: User = Depends(get_current_user),
@@ -95,6 +91,7 @@ async def update_page(
 ):
     db_page = (
         db.query(Page)
+        .options(joinedload(Page.widgets))
         .where(
             Page.id == page_id,
             Page.user_id == user.id,
@@ -105,14 +102,8 @@ async def update_page(
 
     if not db_page:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="Page not found",
-        )
-
-    if db_page.user_id != user.id:
-        raise HTTPException(
-            status_code=404,
-            detail="This page is not yours",
         )
 
     for key, value in page_data.model_dump(exclude_unset=True).items():
@@ -142,14 +133,8 @@ async def delete_page(
 
     if not db_page:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="Page not found",
-        )
-
-    if db_page.user_id != user.id:
-        raise HTTPException(
-            status_code=404,
-            detail="This page is not yours",
         )
 
     db_page.deleted_at = datetime.now(timezone.utc)
