@@ -1,3 +1,7 @@
+# Asyncio
+import asyncio
+from contextlib import asynccontextmanager
+
 # FastAPI
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,6 +12,20 @@ import sentry_sdk
 # Application
 from core.settings import settings  # Settings
 from routers import auth, oauth, host, group, page, tag, user  # Routers
+
+# Andromeda
+from andromeda.worker import start_andromeda_worker
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    andromeda_task = asyncio.create_task(start_andromeda_worker(poll_interval=10))
+
+    yield
+
+    andromeda_task.cancel()
+    await asyncio.gather(andromeda_task, return_exceptions=True)
+
 
 # Init Sentry
 sentry_sdk.init(
@@ -39,6 +57,7 @@ app = FastAPI(
             "description": "Development",
         },
     ],
+    lifespan=lifespan,
 )
 
 app.add_middleware(
