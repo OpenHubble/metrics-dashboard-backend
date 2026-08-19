@@ -14,7 +14,8 @@ from typing import Any
 from datetime import datetime
 
 # Application
-from models import Host, Metric  # Models
+from models import Host  # App Models
+from andromeda.models import Metric  # Andromeda Models
 
 # Logger
 logger = logging.getLogger("andromeda.service")

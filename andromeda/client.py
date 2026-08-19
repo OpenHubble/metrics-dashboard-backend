@@ -12,7 +12,7 @@ import httpx
 
 # Application
 from enums.communication import CommunicationType  # Enum
-from models import Host  # Models
+from models import Host  # App Models
 
 # Logger
 logger = logging.getLogger("andromeda.client")
