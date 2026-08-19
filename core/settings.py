@@ -60,20 +60,20 @@ class Settings(BaseSettings):
             )
         return value
 
-        # Validate: timescaledb_andromeda_url
-        @field_validator("timescaledb_andromeda_url")
-        @classmethod
-        def validate_timescaledb_andromeda_url(cls, value: str) -> str:
-            value = value.strip()
-            if not value:
-                raise ValueError("timescaledb_andromeda_url must be set")
-            if not value.startswith(
-                ("postgresql://", "postgresql+psycopg2://", "postgresql+psycopg://")
-            ):
-                raise ValueError(
-                    "timescaledb_andromeda_url must be a valid PostgreSQL connection string"
-                )
-            return value
+    # Validate: timescaledb_andromeda_url
+    @field_validator("timescaledb_andromeda_url")
+    @classmethod
+    def validate_timescaledb_andromeda_url(cls, value: str) -> str:
+        value = value.strip()
+        if not value:
+            raise ValueError("timescaledb_andromeda_url must be set")
+        if not value.startswith(
+            ("postgresql://", "postgresql+psycopg2://", "postgresql+psycopg://")
+        ):
+            raise ValueError(
+                "timescaledb_andromeda_url must be a valid PostgreSQL connection string"
+            )
+        return value
 
     # Validator: secret
     @field_validator("secret")
