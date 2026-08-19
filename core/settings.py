@@ -45,20 +45,35 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    # Validate: postgresql_url
-    @field_validator("postgresql_url")
+    # Validate: postgresql_app_url
+    @field_validator("postgresql_app_url")
     @classmethod
-    def validate_postgresql_url(cls, value: str) -> str:
+    def validate_postgresql_app_url(cls, value: str) -> str:
         value = value.strip()
         if not value:
-            raise ValueError("postgresql_url must be set")
+            raise ValueError("postgresql_app_url must be set")
         if not value.startswith(
             ("postgresql://", "postgresql+psycopg2://", "postgresql+psycopg://")
         ):
             raise ValueError(
-                "postgresql_url must be a valid PostgreSQL connection string"
+                "postgresql_app_url must be a valid PostgreSQL connection string"
             )
         return value
+
+        # Validate: timescaledb_andromeda_url
+        @field_validator("timescaledb_andromeda_url")
+        @classmethod
+        def validate_timescaledb_andromeda_url(cls, value: str) -> str:
+            value = value.strip()
+            if not value:
+                raise ValueError("timescaledb_andromeda_url must be set")
+            if not value.startswith(
+                ("postgresql://", "postgresql+psycopg2://", "postgresql+psycopg://")
+            ):
+                raise ValueError(
+                    "timescaledb_andromeda_url must be a valid PostgreSQL connection string"
+                )
+            return value
 
     # Validator: secret
     @field_validator("secret")
