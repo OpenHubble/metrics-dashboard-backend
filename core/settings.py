@@ -16,8 +16,11 @@ class Settings(BaseSettings):
     # Application
     app_mode: str
 
-    # Database
-    postgresql_url: str
+    # Database Application
+    postgresql_app_url: str
+
+    # Database Andromeda
+    timescaledb_andromeda_url: str
 
     # Security
     secret: str = ""
