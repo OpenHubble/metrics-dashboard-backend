@@ -1,21 +1,19 @@
 # SQLAlchemy
-from sqlalchemy import Uuid, ForeignKey
+from sqlalchemy import ForeignKey, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 # UUID
 import uuid
 
 # Application
-from base import BaseModel  # Base
+from base import BaseModel
 
 
-# Page Model
 class Page(BaseModel):
     __tablename__ = "pages"
 
-    # Columns
     id: Mapped[uuid.UUID] = mapped_column(
-        Uuid,
+        Uuid(as_uuid=True),
         primary_key=True,
         default=uuid.uuid4,
         index=True,
@@ -29,7 +27,8 @@ class Page(BaseModel):
 
     # Foreign Keys
     user_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("users.id"),
+        Uuid(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
         index=True,
         nullable=False,
     )
@@ -38,4 +37,9 @@ class Page(BaseModel):
     user: Mapped["User"] = relationship(
         "User",
         back_populates="pages",
+    )
+    widgets: Mapped[list["Widget"]] = relationship(
+        "Widget",
+        back_populates="page",
+        cascade="all, delete-orphan",
     )

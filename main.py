@@ -11,7 +11,7 @@ import sentry_sdk
 
 # Application
 from core.settings import settings  # Settings
-from routers import auth, oauth, host, group, page, tag, user  # Routers
+from routers import auth, oauth, host, group, page, widget, tag, user  # Routers
 
 # Andromeda
 from andromeda.worker import start_andromeda_worker
@@ -19,6 +19,7 @@ from andromeda.worker import start_andromeda_worker
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    print("here")
     andromeda_task = asyncio.create_task(start_andromeda_worker(poll_interval=10))
 
     yield
@@ -41,11 +42,12 @@ app = FastAPI(
     openapi_tags=[
         {"name": "Authentication", "description": "Authentication endpoints"},
         {"name": "OAuthentication", "description": "OAuthentication endpoints"},
-        {"name": "Host", "description": "Host endpoints"},
-        {"name": "Group", "description": "Group endpoints"},
-        {"name": "Tag", "description": "Tag endpoints"},
-        {"name": "Page", "description": "Page endpoints"},
         {"name": "User", "description": "User endpoints"},
+        {"name": "Tag", "description": "Tag endpoints"},
+        {"name": "Group", "description": "Group endpoints"},
+        {"name": "Host", "description": "Host endpoints"},
+        {"name": "Page", "description": "Page endpoints"},
+        {"name": "Widget", "description": "Widget endpoints"},
     ],
     servers=[
         {
@@ -57,7 +59,7 @@ app = FastAPI(
             "description": "Development",
         },
     ],
-    lifespan=lifespan,
+    lifespan=lifespan if settings.app_mode == "production" else None,
 )
 
 app.add_middleware(
@@ -81,3 +83,4 @@ app.include_router(group.router, prefix="/api")  # Group
 app.include_router(tag.router, prefix="/api")  # Tag
 app.include_router(page.router, prefix="/api")  # Page
 app.include_router(user.router, prefix="/api")  # User
+app.include_router(widget.router, prefix="/api")  # Widget

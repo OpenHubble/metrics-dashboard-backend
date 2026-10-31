@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 # Application
-from base import BaseModel  # Base
+from andromeda.base import BaseModel  # Base
 
 
 # Metrics Model
